@@ -1,0 +1,33 @@
+{ "data":[
+	{
+		"id":1,
+        "courseName":"",
+        "boardName":"CBSE",
+        "college":""
+	},
+	{
+		"id":2,
+        "courseName":"CBSE",
+        "boardName":"",
+        "college":""
+	},
+	{
+		"id":3,
+        "courseName":"",
+        "boardName":"",
+        "college":"CBSE"
+	},
+	{
+		"id":4,
+        "courseName":"",
+        "boardName":"CBSE",
+        "college":""
+	},
+	{
+		"id":5,
+        "courseName":"CBSE",
+        "boardName":"",
+        "college":""
+	}
+]
+}
