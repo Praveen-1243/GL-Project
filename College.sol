@@ -29,12 +29,19 @@ contract CollegeContract {
         uint8 courseId;
         string courseName;
     }
+    event LogMessage(string message);
     
     Course[] public CourseDetails; 
     mapping (address => CollegeData) colleMapping;
              //StudentId => courseId, marks
     mapping (uint8 => mapping(uint8 => uint8)) marksInfo;
+            //studentId, courses
     mapping (uint8 => uint8[]) studentRegisteredCourses;
+
+
+    function displayBoards() public view returns(RegularBoardContract.BoardInfo[] memory) {
+        return regularBoardContract.getBoardList();
+    }
 
     function registerCollege(address _collegeAddress, uint8 _collegeId, string memory _collegeName, uint8 _boardId) public {
         //Registe college with empty students
@@ -47,22 +54,36 @@ contract CollegeContract {
         //we can keep limit for number of colleges
         _collegeData.studentIds.push(_studentId);
     }
-    //addCourse() : colleges will add their courses
-    function addCourse(uint8 _courseId, string memory _courseName) public onlyCollege {
+    //addCourse() : colleges will add their courses :: working
+    function addCourse(uint8 _courseId, string memory _courseName) public onlyCollege returns (string memory){
+        for (uint i=0; i < CourseDetails.length; i++) {
+            if (CourseDetails[i].courseId == _courseId) {
+                return "Fail";
+            }
+        }
         Course memory _course = Course(_courseId, _courseName);
         CourseDetails.push(_course);
+        return "Suceess";
     }
-    //listCourses : To display at Student node
+    //listCourses : To display at Student node : working
     function listCoures() external view returns (Course[] memory _courseList) {
         return CourseDetails;
     }
+    //working
     function enrollCourse(uint8 _courseId, uint8 _studentId) public {
         //keep condition for maximum students
         studentRegisteredCourses[_studentId].push(_courseId);
     }
-    //only college can add marks
-    function addMarks(uint8 _studentId, uint8 _courseId, uint8 _marks) public onlyCollege {
-        marksInfo[_studentId][_courseId] = _marks;
+    //only college can add marks : working
+    function addMarks(uint8 _studentId, uint8 _courseId, uint8 _marks) public onlyCollege returns(string memory)  {
+        uint8[] memory _courseList = studentRegisteredCourses[_studentId];
+        for (uint i=0; i < _courseList.length; i++) {
+            if (_courseList[i] == _courseId) {
+                marksInfo[_studentId][_courseId] = _marks;
+                return  "Success";
+            }
+        }
+        return "Fail";
     }
     function generateTransacript(address _to, uint8 _studentId, string memory _studentName) public  onlyCollege {
         uint8 _marks = 0;
