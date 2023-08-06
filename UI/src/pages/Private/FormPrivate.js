@@ -14,12 +14,17 @@ const Form =(props)=>{
         setCourseID(event.target.value);
       };
 
+      
+     async function sm1(tokenId){
+///// implementation for check
+     }
+    
 
       const submitHandler = (event) => {
         event.preventDefault();
-        
+        console.log(EntredTitle);
         /// Add check button handler
-
+          sm1(EntredTitle);
         setCourseID("");
         setEnteredTitle("");
         props.onClose();

@@ -71,8 +71,8 @@ const Platform =(props)=>{
      <Main open={props.open}>
         <DrawerHeader />
         <Button onClick={()=>(createHandler('Platform'))}>Register as Platform</Button>
-        <Button onClick={()=>(createHandler('Course'))}> Create a Course</Button>
-        <Button onClick={()=>(createHandler('Student'))}>Enroll to course</Button>
+        <Button onClick={()=>(createHandler('CoursePlatform'))}> Create a Course</Button>
+        <Button onClick={()=>(createHandler('StudentPlatform'))}>Enroll to course</Button>
         <Modal
               open={isClicked}
               onClose={closeHandler}

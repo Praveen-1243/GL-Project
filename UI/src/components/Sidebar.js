@@ -17,6 +17,7 @@ import Regulated from '../pages/Regulated/Regulated';
 import Private from '../pages/Private/Private';
 import Platform from '../pages/Platform';
 import {listItems} from './listItems';
+import Web3 from 'web3'
 
 const drawerWidth = 240;
 
