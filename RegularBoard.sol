@@ -21,8 +21,10 @@ interface RegularInterface {
 
 contract RegularBoardContract is RegularInterface{
     address boardOwner;
+    uint8 private boardId;
     constructor(address _address) {
         boardOwner = _address;
+        boardId = 1;
     }
     modifier onlyBoard() {
         require(msg.sender == boardOwner, "Only the Board can access this function.");
@@ -34,13 +36,14 @@ contract RegularBoardContract is RegularInterface{
     
     event sampleMsg(address);
 
-    function registerBoard(uint8 _boardId, string memory _boardname) public returns (bool) {  
-        if (boardDataExists[boardOwner]) {
+    function registerBoard(string memory _boardname) public returns (bool) {  
+        if (boardDataExists[boardOwner] && (boardId < 1 ||boardId>10)) {
             return false;
         }                  
-        boardMapping[boardOwner] = Board(_boardId, _boardname, new uint8[](0));
+        boardMapping[boardOwner] = Board(boardId, _boardname, new uint8[](0));        
         boardDataExists[boardOwner] = true;
-        BoardInfo memory _boardInfo = BoardInfo(_boardId, _boardname);
+        BoardInfo memory _boardInfo = BoardInfo(boardId, _boardname);
+        boardId = boardId+1;
         boardList.push(_boardInfo);
         return true;
     }
@@ -49,8 +52,9 @@ contract RegularBoardContract is RegularInterface{
         Board storage _board = boardMapping[boardOwner];         
         _board.listedColleges.push(_collegeId);
     }
-    function getBoardList() external view override returns (BoardInfo[] memory) {        
-        return boardList;
+    function getBoardList() external view override returns (BoardInfo[] memory) {
+        BoardInfo[] storage _boardList = boardList;  
+        return _boardList;
     }
     function getCollegeList() external view override returns(uint8[] memory _collegeList) {        
         Board storage _board = boardMapping[boardOwner];

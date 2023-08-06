@@ -21,17 +21,19 @@ interface ICollegeContract {
 }
 
 contract CollegeContract is ICollegeContract {
-    MintingContract mint;
-
     address collegeOwner;
     address regularSmartContractAddress;
     address mintSmartContractAddress;
 
+    uint8 private collegeId;
+    uint8 private courseId;
 
     constructor(address _address, address _regular, address _mint) {
         regularSmartContractAddress = _regular;
         mintSmartContractAddress = _mint;
         collegeOwner = _address;
+        collegeId = 11;
+        courseId = 131;
     }
 
     modifier onlyCollege() {
@@ -58,17 +60,18 @@ contract CollegeContract is ICollegeContract {
     event Datalog(string ,uint256, uint256);
     
 
-    function registerCollege(uint8 _collegeId, string memory _collegeName, uint8 _boardId) public returns (bool) {
-        if (collegeExists[collegeOwner]) {
+    function registerCollege(string memory _collegeName, uint8 _boardId) public returns (bool) {
+        if (collegeExists[collegeOwner] && (collegeId <11 || collegeId>30)) {
             return false;
         }  
         //Registe college with empty students
-        colleMapping[collegeOwner] = CollegeData(_collegeId, _collegeName, _boardId, new uint8[](0));
+        colleMapping[collegeOwner] = CollegeData(collegeId, _collegeName, _boardId, new uint8[](0));
         //update college id at Board
-        RegularInterface(regularSmartContractAddress).setCollege(_collegeId);
-        CollegeInfo memory _college = CollegeInfo(_collegeId, _collegeName);
+        RegularInterface(regularSmartContractAddress).setCollege(collegeId);
+        CollegeInfo memory _college = CollegeInfo(collegeId, _collegeName);
         collegesList.push(_college);
         collegeExists[collegeOwner]=true;
+        collegeId = collegeId+1;
         return true;
     }
     function getColleges() public view override returns (CollegeInfo[] memory){
@@ -83,13 +86,14 @@ contract CollegeContract is ICollegeContract {
         _collegeData.studentIds.push(_studentId);
     }
     //addCourse() : colleges will add their courses :: working
-    function addCourse(uint8 _courseId, string memory _courseName) public returns (bool){
-        for (uint i=0; i < CourseDetails[collegeOwner].length; i++) {
-            if (CourseDetails[collegeOwner][i].courseId == _courseId) {
-                return false;
-            }
-        }
-        Course memory _course = Course(_courseId, _courseName);
+    function addCourse(string memory _courseName) public returns (bool){
+        // for (uint i=0; i < CourseDetails[collegeOwner].length; i++) {
+        //     if (CourseDetails[collegeOwner][i].courseId == courseId) {
+        //         return false;
+        //     }
+        // }
+        Course memory _course = Course(courseId, _courseName);
+        courseId = courseId+1;
         CourseDetails[collegeOwner].push(_course);
         return true;
     }

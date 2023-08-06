@@ -39,4 +39,3 @@ contract MintingContract is MintingInterface, IMintingContract {
         return (info.studentId, info.name, info.collegeOrCourse, info.marks, info.message);
     }
 }
-
