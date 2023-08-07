@@ -15,7 +15,7 @@ const Form =(props)=>{
       };
 
       
-     async function sm1(tokenId){
+     async function tokencheck(tokenId){
 ///// implementation for check
      }
     
@@ -24,7 +24,7 @@ const Form =(props)=>{
         event.preventDefault();
         console.log(EntredTitle);
         /// Add check button handler
-          sm1(EntredTitle);
+          tokencheck(EntredTitle);
         setCourseID("");
         setEnteredTitle("");
         props.onClose();

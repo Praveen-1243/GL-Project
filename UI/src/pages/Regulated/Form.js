@@ -4,7 +4,6 @@ import './Form.css';
 import Web3 from 'web3';
 import { useEffect } from 'react';
 
-//import configration from abi file.json
 
 const Form = (props) => {
 
@@ -27,139 +26,164 @@ const Form = (props) => {
 
 async function init(EntredTitle){
   console.log('called');
-  const abi = [
-    {
-      "inputs": [],
-      "stateMutability": "nonpayable",
-      "type": "constructor"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "uint8",
-          "name": "_boardId",
-          "type": "uint8"
-        }
-      ],
-      "name": "Register",
-      "type": "event"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "boardList",
-      "outputs": [
-        {
-          "internalType": "uint8",
-          "name": "boardId",
-          "type": "uint8"
-        },
-        {
-          "internalType": "string",
-          "name": "boardName",
-          "type": "string"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "boardOwner",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "getBoardList",
-      "outputs": [
-        {
-          "components": [
-            {
-              "internalType": "uint8",
-              "name": "boardId",
-              "type": "uint8"
-            },
-            {
-              "internalType": "string",
-              "name": "boardName",
-              "type": "string"
-            }
-          ],
-          "internalType": "struct RegularBoardContract.BoardInfo[]",
-          "name": "",
-          "type": "tuple[]"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "getCollegeList",
-      "outputs": [
-        {
-          "internalType": "uint8[]",
-          "name": "_collegeList",
-          "type": "uint8[]"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "_boardAddress",
-          "type": "address"
-        },
-        {
-          "internalType": "uint8",
-          "name": "_boardId",
-          "type": "uint8"
-        },
-        {
-          "internalType": "string",
-          "name": "_boardname",
-          "type": "string"
-        }
-      ],
-      "name": "registerBoard",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint8",
-          "name": "_collegeId",
-          "type": "uint8"
-        }
-      ],
-      "name": "setCollege",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    }
-  ];
+ const abi=[
+	{
+		"inputs": [
+			{
+				"internalType": "uint8",
+				"name": "_boardId",
+				"type": "uint8"
+			},
+			{
+				"internalType": "string",
+				"name": "_boardname",
+				"type": "string"
+			}
+		],
+		"name": "registerBoard",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint8",
+				"name": "_collegeId",
+				"type": "uint8"
+			}
+		],
+		"name": "setCollege",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_address",
+				"type": "address"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "text",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "sampleMsg",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "boardDataExists",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "boardList",
+		"outputs": [
+			{
+				"internalType": "uint8",
+				"name": "boardId",
+				"type": "uint8"
+			},
+			{
+				"internalType": "string",
+				"name": "boardName",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getBoardList",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "uint8",
+						"name": "boardId",
+						"type": "uint8"
+					},
+					{
+						"internalType": "string",
+						"name": "boardName",
+						"type": "string"
+					}
+				],
+				"internalType": "struct RegularInterface.BoardInfo[]",
+				"name": "",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getCollegeList",
+		"outputs": [
+			{
+				"internalType": "uint8[]",
+				"name": "_collegeList",
+				"type": "uint8[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+];
   
-  const contractAddress="0x245bF613070f57BDb8E3A5F5f4bc4F84876C81D6";
+  const contractAddress="0x56BA5f8c622aeBfB262A105dc77032C48bEcfB23";
   //const web3 = new Web3(Web3.givenProvider || "http://127.0.0.1:7545");
    
   const web3 = new Web3(window.ethereum);
@@ -176,14 +200,37 @@ async function init(EntredTitle){
   }
   
   
-  const result1 = await contract.methods.registerBoard(account,2,EntredTitle).call({from:account});
+  const result1 = await contract.methods.registerBoard(8,EntredTitle).send({from:account});
  console.log(result1);
 
-//  contract.events.on('Register',(success)=>{
-//   console.log(success);
-//  });
+//  var event = contract.events.sampleMsg();
 
-  const result = await contract.methods.getBoardList().send({from:account});
+// // watch for changes
+// event.watch(function(error, result){
+//     // result will contain various information
+//     // including the argumets given to the `Deposit`
+//     // call.
+//     if (!error)
+//         console.log(result);
+// });
+
+// contract.events.sampleMsg( function(error, event){ console.log(event); })
+// .on('data', function(event){
+//   console.log(event); // same results as the optional callback above
+// })
+// .on('changed', function(event){
+//   // remove event from local database
+// })
+// .on('error', console.error);
+
+// var event = contract.sampleMsg(function(error, result) {
+//   if (!error)
+//       console.log(result);
+// });
+
+// contract.getPastEvents("sampleMsg").then((results) => console.log(results));
+
+  const result =  await contract.methods.getBoardList().call({from:account});
   console.log(result); 
 }
 
