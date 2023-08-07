@@ -6,14 +6,16 @@ import "PrivateEntity.sol";
 
 contract StudentContract {
 
-    CollegeContract _collegeContract;
     address studentAddress;
     address collegeAddress;
     address privateAddress;
+    uint8 private studentId;
     constructor(address _studentaddress, address _collegeAdress, address _privAddress) {
         studentAddress = _studentaddress;
         collegeAddress = _collegeAdress;
         privateAddress = _privAddress;
+        studentId = 31;
+
     }    
     struct StudentData {
         uint8 studentId;
@@ -26,12 +28,13 @@ contract StudentContract {
     mapping (address=>bool) studentExistsAtPrivate;
     mapping (address => uint8[]) studentTokens;
 
-    function registerToCollege(uint8 _studentId, string memory _studentName) public returns (bool){
-        if (studentExists[studentAddress]) {
+    function registerToCollege(string memory _studentName) public returns (bool){
+        if (studentExists[studentAddress] &&(studentId<31 || studentId>100)) {
             return false;
         }
-        studentMapping[studentAddress] = StudentData(_studentId, _studentName, new uint8[](0));        
-        ICollegeContract(collegeAddress).setStudent(_studentId);
+        studentMapping[studentAddress] = StudentData(studentId, _studentName, new uint8[](0));        
+        ICollegeContract(collegeAddress).setStudent(studentId);
+        studentId = studentId+1;
         studentExists[studentAddress] = true;
         return true;
     }

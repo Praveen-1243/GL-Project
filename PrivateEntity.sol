@@ -21,9 +21,13 @@ interface IPrivateEntity {
 contract PrivateEntityContract is IPrivateEntity{
     address privateEntityAddress;
     address mintAddress;
+    uint8 private privId;
+    uint8 private courseId;
     constructor(address _addr, address _mintAddr) {
         privateEntityAddress = _addr;
         mintAddress = _mintAddr;
+        privId = 101;
+        courseId = 161;
     }
 
     struct PrivEntity {
@@ -39,14 +43,15 @@ contract PrivateEntityContract is IPrivateEntity{
     mapping (address => mapping(uint8 => uint8[])) studentRegisteredCourses;
     mapping (address => mapping(uint8 => mapping(uint8 => uint256))) marksInfo;
 
-    function registerPrivateEntity(uint8 _privId, string memory _privname) public returns(bool){
-        if (privEntityExists[privateEntityAddress]) {
+    function registerPrivateEntity(string memory _privname) public returns(bool){
+        if (privEntityExists[privateEntityAddress] &&(privId <101 || privId >110)) {
             return false;
         }  
-        privEntityMapping[privateEntityAddress] = PrivEntity(_privId, _privname, new uint8[](0));
-        PrivEntityInfo memory _privEntity = PrivEntityInfo(_privId, _privname);
+        privEntityMapping[privateEntityAddress] = PrivEntity(privId, _privname, new uint8[](0));
+        PrivEntityInfo memory _privEntity = PrivEntityInfo(privId, _privname);
         privEntityList.push(_privEntity);
         privEntityExists[privateEntityAddress]=true;
+        privId = privId+1;
         return true;
     }
     function getEntityList() public view override returns (PrivEntityInfo[] memory) {
@@ -56,13 +61,13 @@ contract PrivateEntityContract is IPrivateEntity{
         PrivEntity storage _privData = privEntityMapping[privateEntityAddress];
         _privData.studentList.push(_studentId);
     }
-    function addCourse(uint8 _courseId, string memory _courseName) public returns (bool){
-        for (uint i=0; i < CourseDetails[privateEntityAddress].length; i++) {
-            if (CourseDetails[privateEntityAddress][i].courseId == _courseId) {
-                return false;
-            }
-        }
-        Course memory _course = Course(_courseId, _courseName);
+    function addCourse(string memory _courseName) public returns (bool){
+        // for (uint i=0; i < CourseDetails[privateEntityAddress].length; i++) {
+        //     if (CourseDetails[privateEntityAddress][i].courseId == _courseId) {
+        //         return false;
+        //     }
+        // }
+        Course memory _course = Course(courseId, _courseName);
         CourseDetails[privateEntityAddress].push(_course);
         return true;
     }
@@ -90,12 +95,12 @@ contract PrivateEntityContract is IPrivateEntity{
         }
         return false;
     }
-    function generateTransacript(address _to, uint8 _studentId, string memory _studentName, uint8 courseId) public override returns(uint8)  {
-        uint256 _marks = marksInfo[privateEntityAddress][_studentId][courseId];
+    function generateTransacript(address _to, uint8 _studentId, string memory _studentName, uint8 _courseId) public override returns(uint8)  {
+        uint256 _marks = marksInfo[privateEntityAddress][_studentId][_courseId];
         string memory studentStatus = "";
         string memory collegeName = "";
         for (uint i=0; i < CourseDetails[privateEntityAddress].length; i++) {
-            if (CourseDetails[privateEntityAddress][i].courseId == courseId) {
+            if (CourseDetails[privateEntityAddress][i].courseId == _courseId) {
                 collegeName = CourseDetails[privateEntityAddress][i].courseName;
             }
         }
