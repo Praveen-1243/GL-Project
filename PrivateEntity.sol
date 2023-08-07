@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.2 <0.9.0;
-import "Minting.sol";
+import "GL-Project/Minting.sol";
 
 interface IPrivateEntity {
     struct PrivEntityInfo {
-        uint8 collegeId;
-        string collegeName;
+        uint8 privateId;
+        string privateName;
     }
     struct Course {
         uint8 courseId;
@@ -14,7 +14,7 @@ interface IPrivateEntity {
     function getEntityList() external view returns (PrivEntityInfo[] memory);
     function setStudent(uint8 _studentId) external ;
     function listCoures() external view returns (Course[] memory _courseList);
-    function enrollCourse(uint8 _courseId, uint8 _studentId) external returns(bool);
+    function enrollCourse(uint8 _courseId, uint8 _studentId) external;
     function generateTransacript(address _to, uint8 _studentId, string memory _studentName, uint8 _courseId) external returns(uint8);
 }
 
@@ -23,11 +23,13 @@ contract PrivateEntityContract is IPrivateEntity{
     address mintAddress;
     uint8 private privId;
     uint8 private courseId;
-    constructor(address _addr, address _mintAddr) {
-        privateEntityAddress = _addr;
+    uint8 private randomMarks;
+    constructor(address _mintAddr) {
+        privateEntityAddress = msg.sender;
         mintAddress = _mintAddr;
         privId = 101;
         courseId = 161;
+        randomMarks = 20;
     }
 
     struct PrivEntity {
@@ -44,7 +46,7 @@ contract PrivateEntityContract is IPrivateEntity{
     mapping (address => mapping(uint8 => mapping(uint8 => uint256))) marksInfo;
 
     function registerPrivateEntity(string memory _privname) public returns(bool){
-        if (privEntityExists[privateEntityAddress] &&(privId <101 || privId >110)) {
+        if (privEntityExists[privateEntityAddress] || (privId <101 || privId >110)) {
             return false;
         }  
         privEntityMapping[privateEntityAddress] = PrivEntity(privId, _privname, new uint8[](0));
@@ -69,31 +71,29 @@ contract PrivateEntityContract is IPrivateEntity{
         // }
         Course memory _course = Course(courseId, _courseName);
         CourseDetails[privateEntityAddress].push(_course);
+        courseId = courseId + 1;
         return true;
     }
     function listCoures() external view override returns (Course[] memory _courseList) {
         return CourseDetails[privateEntityAddress];
     }
-    function enrollCourse(uint8 _courseId, uint8 _studentId) public override returns(bool) {
+    function enrollCourse(uint8 _courseId, uint8 _studentId) public override{
         //studentId check : check course exists or not
-        uint8[] memory _courseList = studentRegisteredCourses[privateEntityAddress][_studentId];
-        for (uint i=0; i < _courseList.length; i++) {
-            if (_courseList[i] == _courseId) {
-                return false;
-            }
-        }
+        // uint8[] memory _courseList = studentRegisteredCourses[privateEntityAddress][_studentId];
+        // for (uint i=0; i < _courseList.length; i++) {
+        //     if (_courseList[i] == _courseId) {
+        //         return false;
+        //     }
+        // }
         studentRegisteredCourses[privateEntityAddress][_studentId].push(_courseId);
-        return true;
+        addMarks(_studentId, _courseId);
     }
-    function addMarks(uint8 _studentId, uint8 _courseId, uint8 _marks) public returns(bool)  {        
-        uint8[] memory _courseList = studentRegisteredCourses[privateEntityAddress][_studentId];
-        for (uint i=0; i < _courseList.length; i++) {
-            if (_courseList[i] == _courseId) {
-                marksInfo[privateEntityAddress][_studentId][_courseId] = _marks;
-                return  true;
-            }
+    function addMarks(uint8 _studentId, uint8 _courseId) public {  
+        if (randomMarks > 90) {
+            randomMarks =20;
         }
-        return false;
+        randomMarks = randomMarks + 5;  
+        marksInfo[privateEntityAddress][_studentId][_courseId] = randomMarks;
     }
     function generateTransacript(address _to, uint8 _studentId, string memory _studentName, uint8 _courseId) public override returns(uint8)  {
         uint256 _marks = marksInfo[privateEntityAddress][_studentId][_courseId];
@@ -111,5 +111,4 @@ contract PrivateEntityContract is IPrivateEntity{
         }
         return IMintingContract(mintAddress).mintNFT(_to, _studentId, _studentName, collegeName, _marks, studentStatus);
     }
-
 }

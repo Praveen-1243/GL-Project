@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.2 <0.9.0;
-import "Minting.sol";
-import "RegularBoard.sol";
+import "GL-Project/Minting.sol";
+import "GL-Project/RegularBoard.sol";
 
 interface ICollegeContract {
     struct CollegeInfo {
@@ -15,8 +15,9 @@ interface ICollegeContract {
     function setStudent(uint8 _studentId) external ;
     function getColleges() external view returns (CollegeInfo[] memory);
     function listCoures() external view returns (Course[] memory _courseList);
-    function enrollCourse(uint8 _courseId, uint8 _studentId) external returns(bool);
+    function enrollCourse(uint8 _courseId, uint8 _studentId) external;
     function generateTransacript(address _to, uint8 _studentId, string memory _studentName) external returns(uint8);
+    function getBoardId(string memory _boardName) external view returns (uint8);
     
 }
 
@@ -27,13 +28,15 @@ contract CollegeContract is ICollegeContract {
 
     uint8 private collegeId;
     uint8 private courseId;
+    uint8 private randomMarks;
 
-    constructor(address _address, address _regular, address _mint) {
+    constructor(address _regular, address _mint) {
         regularSmartContractAddress = _regular;
         mintSmartContractAddress = _mint;
-        collegeOwner = _address;
+        collegeOwner = msg.sender;
         collegeId = 11;
         courseId = 131;
+        randomMarks = 20;
     }
 
     modifier onlyCollege() {
@@ -57,13 +60,14 @@ contract CollegeContract is ICollegeContract {
                            //studentId, courses
     mapping (address => mapping(uint8 => uint8[])) studentRegisteredCourses;
 
-    event Datalog(string ,uint256, uint256);
+    event Datalog(string ,uint256);
     
 
-    function registerCollege(string memory _collegeName, uint8 _boardId) public returns (bool) {
-        if (collegeExists[collegeOwner] && (collegeId <11 || collegeId>30)) {
+    function registerCollege(string memory _collegeName, string memory _boardName) public returns (bool) {
+        if (collegeExists[collegeOwner] || (collegeId <11 || collegeId>30)) {
             return false;
         }  
+        uint8 _boardId = getBoardId(_boardName);
         //Registe college with empty students
         colleMapping[collegeOwner] = CollegeData(collegeId, _collegeName, _boardId, new uint8[](0));
         //update college id at Board
@@ -73,6 +77,16 @@ contract CollegeContract is ICollegeContract {
         collegeExists[collegeOwner]=true;
         collegeId = collegeId+1;
         return true;
+    }
+    function getBoardId(string memory _boardName) public view override returns (uint8) {
+        uint8 _boardId;
+        RegularInterface.BoardInfo[] memory _boardInfo = RegularInterface(regularSmartContractAddress).getBoardList();
+        for (uint i=0; i < _boardInfo.length; i++) {
+            if (keccak256(abi.encodePacked((_boardInfo[i].boardName))) == keccak256(abi.encodePacked((_boardName)))) {   
+                return _boardInfo[i].boardId;
+            }            
+        }
+        return _boardId;
     }
     function getColleges() public view override returns (CollegeInfo[] memory){
         return collegesList;
@@ -102,27 +116,32 @@ contract CollegeContract is ICollegeContract {
         return CourseDetails[collegeOwner];
     }
     //enrollCourse
-    function enrollCourse(uint8 _courseId, uint8 _studentId) public override returns(bool) {
+    function enrollCourse(uint8 _courseId, uint8 _studentId) public override {
         //studentId check : check course exists or not
-        uint8[] memory _courseList = studentRegisteredCourses[collegeOwner][_studentId];
-        for (uint i=0; i < _courseList.length; i++) {
-            if (_courseList[i] == _courseId) {
-                return false;
-            }
-        }
+        // uint8[] memory _courseList = studentRegisteredCourses[collegeOwner][_studentId];
+        // for (uint i=0; i < _courseList.length; i++) {
+        //     if (_courseList[i] == _courseId) {
+        //         return false;
+        //     }
+        // }
         studentRegisteredCourses[collegeOwner][_studentId].push(_courseId);
-        return true;
+        addMarks(_studentId, _courseId);
     }
     //only college can add marks : working
-    function addMarks(uint8 _studentId, uint8 _courseId, uint8 _marks) public returns(bool)  {        
-        uint8[] memory _courseList = studentRegisteredCourses[collegeOwner][_studentId];
-        for (uint i=0; i < _courseList.length; i++) {
-            if (_courseList[i] == _courseId) {
-                marksInfo[collegeOwner][_studentId][_courseId] = _marks;
-                return  true;
-            }
+    function addMarks(uint8 _studentId, uint8 _courseId) private { 
+        if (randomMarks > 90) {
+            randomMarks =20;
         }
-        return false;
+        randomMarks = randomMarks + 5;  
+        marksInfo[collegeOwner][_studentId][_courseId] = randomMarks;       
+        // uint8[] memory _courseList = studentRegisteredCourses[collegeOwner][_studentId];
+        // for (uint i=0; i < _courseList.length; i++) {
+        //     if (_courseList[i] == _courseId) {
+        //         marksInfo[collegeOwner][_studentId][_courseId] = _marks;
+        //         return  true;
+        //     }
+        // }
+        // return false;
     }
     function generateTransacript(address _to, uint8 _studentId, string memory _studentName) public override returns(uint8)  {
         uint256 _marks = 0;
@@ -134,7 +153,6 @@ contract CollegeContract is ICollegeContract {
         for (uint8 i = 0; i< _coursesLists.length; i++) {
             _marks = _marks + marksInfo[collegeOwner][_studentId][_coursesLists[i]];
         } 
-        emit Datalog("Marks and courses", _marks, noOfCourses);
         _marks = _marks/noOfCourses;
         string memory studentStatus = "";
         if (_marks >= 35) {
