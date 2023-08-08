@@ -1,5 +1,11 @@
 import React,{useState} from 'react';
 import './Form.css';
+import Web3 from 'web3';
+import { organizationAbi,organizationContractAddress } from '../Regulated/Organization';
+
+const web3 = new Web3(window.ethereum);
+const accounts = await web3.eth.requestAccounts();
+const account = accounts[0];
 
 const Form =(props)=>{
 
@@ -15,16 +21,17 @@ const Form =(props)=>{
       };
 
       
-     async function tokencheck(tokenId){
-///// implementation for check
+     async function tokencheck(){
+      const organisationContract = new web3.eth.Contract(organizationAbi,organizationContractAddress);
+      const result2 = await organisationContract.methods.validateTransacript(EntredTitle).call({form:account});
+      console.log('check certi',result2);
      }
     
 
       const submitHandler = (event) => {
         event.preventDefault();
         console.log(EntredTitle);
-        /// Add check button handler
-          tokencheck(EntredTitle);
+         tokencheck();
         setCourseID("");
         setEnteredTitle("");
         props.onClose();
@@ -39,16 +46,6 @@ const Form =(props)=>{
     return (<>
     <form onSubmit={submitHandler}>
       <div className="new-expense__controls">
-        {props.type === 'Student' && 
-             <div className="new-expense__control">
-             <label>Course Id</label>
-             <input
-               type="text"
-               value={courseID}
-               onChange={courseChangeHandler}
-             />
-           </div>
-        }
         <div className="new-expense__control">
           <label>{`${props.type} Name`}</label>
           <input

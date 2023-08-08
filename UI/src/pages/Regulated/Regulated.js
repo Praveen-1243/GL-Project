@@ -58,7 +58,7 @@ const Regulated =(props)=>{
 
       const [isClicked,setIsClicked] = useState(false);
       const [event,setEvent] = useState('');
-      const [boardNameOptions,setBoardNameOptions]=useState([]);
+      const [boardNameOptions,setBoardNameOptions]= ([]);
 
 
       const createHandler =(e)=>{

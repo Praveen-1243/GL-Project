@@ -131,7 +131,7 @@ export const regularBoardAbi=[
 		"type": "function"
 	}
 ]
-export const regularBoardContractAddress = "0x10Fa48312B1ED0e7db308B0b14DbF4CDA659B10D";
+export const regularBoardContractAddress = "0xec266b559E10bA8C142D0F4A8a9f33f6469A3FD6";
 
 export default {
     regularBoardAbi,
