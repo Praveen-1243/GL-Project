@@ -23,7 +23,6 @@ contract RegularBoardContract is RegularInterface{
     address boardOwner;
     uint8 private boardId;
     constructor() {
-        boardOwner = msg.sender;
         boardId = 1;
     }
     modifier onlyBoard() {
@@ -36,7 +35,8 @@ contract RegularBoardContract is RegularInterface{
     
     event sampleMsg(address);
 
-    function registerBoard(string memory _boardname) public returns (bool) {  
+    function registerBoard(address _boardAddr, string memory _boardname) public returns (bool) {  
+        boardOwner = _boardAddr;
         if (boardDataExists[boardOwner] || (boardId < 1 ||boardId>10)) {
             return false;
         }                  

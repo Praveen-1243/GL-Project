@@ -14,7 +14,6 @@ contract StudentContract {
     uint8 private studentId;
     uint8 private privEntityStudentId;
     constructor(address _regularAddr, address _collegeAdress, address _privAddress) {
-        studentAddress = msg.sender;
         regularSmartContractAddress = _regularAddr;
         collegeAddress = _collegeAdress;
         privateAddress = _privAddress;
@@ -38,7 +37,8 @@ contract StudentContract {
     event SampleMSG(string, uint8);
     event Datalog(string ,uint256);
 
-    function registerToCollege(string memory _studentName, string memory _collegeName, string memory _boardName) public returns (bool){
+    function registerToCollege(address _studentAddr, string memory _studentName, string memory _collegeName, string memory _boardName) public returns (bool){
+        studentAddress = _studentAddr;
         if (studentExists[studentAddress] || (studentId<31 || studentId>100)) {
             return false;
         }
