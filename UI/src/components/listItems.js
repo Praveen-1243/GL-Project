@@ -22,7 +22,7 @@ export const listItems=(
         <ListItemIcon>
         <MailIcon /> 
         </ListItemIcon>
-        <ListItemText primary="Private" />
+        <ListItemText primary="Organization" />
         </ListItemButton>
     </Link>
 
@@ -31,7 +31,16 @@ export const listItems=(
         <ListItemIcon>
          <InboxIcon /> 
         </ListItemIcon>
-        <ListItemText primary="Platform" />
+        <ListItemText primary="Private" />
+        </ListItemButton>
+    </Link>
+
+    <Link to='/student' >
+        <ListItemButton>
+        <ListItemIcon>
+        <MailIcon /> 
+        </ListItemIcon>
+        <ListItemText primary="Student" />
         </ListItemButton>
     </Link>
          

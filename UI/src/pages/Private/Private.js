@@ -59,8 +59,17 @@ const Private =(props)=>{
       const submitHandler = (event) => {
         event.preventDefault();
         
-
         /// Check button implementation 
+        //// put below inside a funcition.
+        
+      //  
+      //   const organisationContract = new web3.eth.Contract(organizationAbi,organizationContractAddress);
+      //  const result2 = await organisationContract.methods.validateTransacript("inputfromuser").call({form:account});
+      //  console.log('check certi',result2);
+
+
+
+
         setTokenId("");
       
       };
