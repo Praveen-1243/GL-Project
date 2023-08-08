@@ -66,7 +66,8 @@ const Private =(props)=>{
         <Box sx={style}>
           <Form type="Token" valResult={submitValue}/>
         </Box>
-        {result && result !== 'null' && result !== 'undefined' && <Typography>{`${result._name} ${result._message} ${result.details} with ${result._marks} marks`}</Typography>}
+        {result && result !== 'null' && result !== 'undefined' && result._marks>0 && <Typography>{`${result._name} ${result._message} ${result.details} with ${result._marks} marks`}</Typography>}
+        {result && result !== 'null' && result !== 'undefined' && result._marks<=0 && <Typography>Certificate doesn't exist</Typography>}
       </Main>
     </>)
 }
