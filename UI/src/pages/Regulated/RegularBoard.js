@@ -101,6 +101,11 @@ export const regularBoardAbi=[
 	{
 		"inputs": [
 			{
+				"internalType": "address",
+				"name": "_boardAddr",
+				"type": "address"
+			},
+			{
 				"internalType": "string",
 				"name": "_boardname",
 				"type": "string"
@@ -131,7 +136,7 @@ export const regularBoardAbi=[
 		"type": "function"
 	}
 ]
-export const regularBoardContractAddress = "0xec266b559E10bA8C142D0F4A8a9f33f6469A3FD6";
+export const regularBoardContractAddress = "0x894b062611b00358a89F5F36Ae5BE11941DFEc54";
 
 export default {
     regularBoardAbi,

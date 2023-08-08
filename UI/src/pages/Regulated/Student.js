@@ -318,6 +318,11 @@ export const studentAbi=[
 	{
 		"inputs": [
 			{
+				"internalType": "address",
+				"name": "_studentAddr",
+				"type": "address"
+			},
+			{
 				"internalType": "string",
 				"name": "_studentName",
 				"type": "string"
@@ -370,8 +375,7 @@ export const studentAbi=[
 	}
 ]
 
-
-export const studentContractAddress = "0xea9e87C42e2b8E357DBA43d95589cE223dA6eDeC";
+export const studentContractAddress = "0x8cd877a18C3264E14328441079339b6355619471";
 
 export default {
     studentAbi,

@@ -250,6 +250,11 @@ export const collegeAbi=[
 	{
 		"inputs": [
 			{
+				"internalType": "address",
+				"name": "_clgAddr",
+				"type": "address"
+			},
+			{
 				"internalType": "string",
 				"name": "_collegeName",
 				"type": "string"
@@ -326,7 +331,7 @@ export const collegeAbi=[
 ]
 
 
-export const collegeContractAddress = "0x6563FaE07306dFFcF853dF840e9824311f0665CF";
+export const collegeContractAddress = "0xd9E73b5968E67eeBDc588B8aa950c5Bb2307c5F1";
 
 export default {
     collegeAbi,

@@ -523,7 +523,7 @@ export const mintingAbi=[
 ]
 
 
-export const mintingContractAddress = "0xAb3E53A460F3f75c1eB2BfF663AC81ee2470AAB6";
+export const mintingContractAddress = "0x297fD43EA418d8cc27db641b42529DB0308b953C";
 
 export default {
     mintingAbi,

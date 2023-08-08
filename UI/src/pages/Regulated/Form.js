@@ -9,10 +9,6 @@ import { privateEntityAbi,privateEntityContractAddress } from './PrivateEntity';
 import { studentAbi,studentContractAddress } from './Student';
 
 
-const web3 = new Web3(window.ethereum);
-const accounts = await web3.eth.requestAccounts();
-const account = accounts[0];
-
 
 const Form = (props) => {
 
@@ -43,9 +39,13 @@ const Form = (props) => {
   };
 
 async function init(){
+  const web3 = new Web3(window.ethereum);
+const accounts = await web3.eth.requestAccounts();
+const account = accounts[0];
   //const web3 = new Web3(Web3.givenProvider || "http://127.0.0.1:7545");  
   try {
    if(props.type==='Board'){
+    console.log('account',account);
       const regularBoardcontract = new web3.eth.Contract(regularBoardAbi, regularBoardContractAddress);
        const result1 = await regularBoardcontract.methods.registerBoard(account,EntredTitle).send({from:account});
        const result8 = await regularBoardcontract.methods.registerBoard(account,EntredTitle).call({from:account});
@@ -119,21 +119,24 @@ async function init(){
         //Regulated Certificate   getting tokenId 
 
         const studentContract  = new web3.eth.Contract(studentAbi, studentContractAddress);
+        const result4 = await studentContract.methods.getTransacript().call({from:account});
+
     const result5 = await studentContract.methods.getTransacript().send({from:account});
-    console.log(result5);
+    console.log(result4,result5);
   }
   else if(props.type === 'PrivateReg'){
     //Register to Private
     
     const studentContract  = new web3.eth.Contract(studentAbi, studentContractAddress);
      const result5 = await studentContract.methods.registerToPrivateEntity(EntredTitle,dropDownValue.privateList.value).send({from:account});
-     const result6 = await studentContract.methods.registerToPrivateEntity(EntredTitle,dropDownValue.privateList.value).call({from:account});
-     console.log(result6);
+     //const result6 = await studentContract.methods.registerToPrivateEntity(EntredTitle,dropDownValue.privateList.value).call({from:account});
+      
+     console.log(result5);
   }
   else if(props.type === 'StudentPlatform'){
      //Enroll to Private    
     const studentContract  = new web3.eth.Contract(studentAbi, studentContractAddress);
-    const privatestudentId = await studentContract.methods.getPrivateStudentId.call({from:account}); // getting array
+    const privatestudentId = await studentContract.methods.getPrivateStudentId().call({from:account}); // getting array
     console.log('privatestudentId',privatestudentId);
     const result5 = await studentContract.methods.enrollAtprivateEntity(dropDownValue.platformCOurseList.value,privatestudentId).send({from:account});
     console.log(result5);
@@ -143,8 +146,10 @@ async function init(){
   else if(props.type === 'PriCertificate'){
     //Private Certificate getting right tokenID
     const studentContract  = new web3.eth.Contract(studentAbi, studentContractAddress);
-    const result5 = await studentContract.methods.generatePrivateEntityTransacript (dropDownValue.courseCerti.value).call({from:account});
-    console.log(result5);
+    const result6 = await studentContract.methods.generatePrivateEntityTransacript(dropDownValue.courseCerti.value).call({from:account});
+    const result5 = await studentContract.methods.generatePrivateEntityTransacript(dropDownValue.courseCerti.value).send({from:account});
+    
+    console.log(result6,result5);
     console.log(dropDownValue.courseCerti.value);
     
   }
@@ -174,6 +179,9 @@ async function init(){
 
 useEffect(() => {
  async function fetch(){
+  const web3 = new Web3(window.ethereum);
+  const accounts = await web3.eth.requestAccounts();
+  const account = accounts[0];
   if(props.type === 'College'){
 
     const regularBoardcontract = new web3.eth.Contract(regularBoardAbi, regularBoardContractAddress);
@@ -211,7 +219,8 @@ else if(props.type==='StudentPlatform'){
  else if(props.type==='RegCertificate'){
   const studentContract  = new web3.eth.Contract(studentAbi, studentContractAddress);
   const result5 = await studentContract.methods.getTransacript().call({from:account});
-  console.log(result5);
+  const result9 = await studentContract.methods.getTransacript().send({from:account});
+  console.log(result5,result9);
  }
  else if(props.type==='PriCertificate'){
   const studentContract = new web3.eth.Contract(studentAbi,studentContractAddress);

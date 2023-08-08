@@ -52,7 +52,7 @@ export const organizationAbi=[
 ]
 
 
-export const organizationContractAddress = "0xa0b22991205a20acefFe82e78301f779eb56DE96";
+export const organizationContractAddress = "0xef9c17D9046c6b6a408a6c6590Bb814898e36C5d";
 
 export default {
     organizationAbi,

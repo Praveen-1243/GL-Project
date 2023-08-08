@@ -205,6 +205,11 @@ export const privateEntityAbi=[
 	{
 		"inputs": [
 			{
+				"internalType": "address",
+				"name": "_privAddr",
+				"type": "address"
+			},
+			{
 				"internalType": "string",
 				"name": "_privname",
 				"type": "string"
@@ -235,7 +240,7 @@ export const privateEntityAbi=[
 		"type": "function"
 	}
 ]
-export const privateEntityContractAddress = "0x237853bB40225d4bB1125339f8539166F67B492d";
+export const privateEntityContractAddress = "0xfD89FC9AdE9FA7856d47069C0378b6Fa392E5e3D";
 
 export default {
     privateEntityAbi,
