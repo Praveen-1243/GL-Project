@@ -2,6 +2,7 @@ import React,{useState} from "react";
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Form from './FormPrivate';
+import { Typography } from "@mui/material";
 const drawerWidth = 240;
 
 const Private =(props)=>{
@@ -48,43 +49,24 @@ const Private =(props)=>{
       }));
 
 
-    const [tokenId,setTokenId] = useState("");
 
-  
+     
 
-      const tokenChangeHandler = (event) => {
-        setTokenId(event.target.value);
-      };
+      const [result,setResult]=useState(null);
 
-      const submitHandler = (event) => {
-        event.preventDefault();
-        
-        /// Check button implementation 
-        //// put below inside a funcition.
-        
-      //  
-      //   const organisationContract = new web3.eth.Contract(organizationAbi,organizationContractAddress);
-      //  const result2 = await organisationContract.methods.validateTransacript("inputfromuser").call({form:account});
-      //  console.log('check certi',result2);
-
-
-
-
-        setTokenId("");
-      
-      };
-
-      const closeHandler = ()=>{
-        setTokenId("");
+      const submitValue = (val)=>{
+        setResult(val);
       }
-
+      
+      console.log(result);
 
     return(<>
      <Main open={props.open}>
         <DrawerHeader />
         <Box sx={style}>
-          <Form type="Token" onClose={closeHandler}/>
+          <Form type="Token" valResult={submitValue}/>
         </Box>
+        {result && result !== 'null' && result !== 'undefined' && <Typography>{`${result._name} ${result._message} ${result.details} with ${result._marks} marks`}</Typography>}
       </Main>
     </>)
 }

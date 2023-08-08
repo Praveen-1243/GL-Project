@@ -20,10 +20,9 @@ const Form = (props) => {
   const [courseNameOptions,setCourseNameOptions] = useState([]);
   const [courseCertiNameOptions,setCourseCertiNameOptions] = useState([]);
   const [collegeNameOptions,setCollegeNameOptions] = useState([]);
-
   const [privateEntityOptions,setPrivateEntityOptions] = useState([]);
   const [platformCourseoptions,setplatformCourseoptions] = useState([]);
-
+  const [CertificateNumber,setCertificateNumber] = useState("");
 
   const onDropDownChange = ({ dropDownId }) => (value) => {
     console.log({dropDownId, value});
@@ -52,10 +51,6 @@ const account = accounts[0];
        console.log(result8);
 
       
-
-      // return boardList;
-       //return boardNameOptionsData.current.push(result3.map(val => {return { label: val[1], value: val[1] }}));
-     
     }
     else if(props.type==='College'){
        const collegecontract = new web3.eth.Contract(collegeAbi, collegeContractAddress);
@@ -64,12 +59,7 @@ const account = accounts[0];
 
         const result8 = await collegecontract.methods.getColleges().call({from:account});
        console.log('collegeList',result8)
-      // const boardList = await regularBoardcontract.methods.getBoardList().call({from:account});
-     // console.log('Retrieved board list:', boardList);
-      // return boardList;
-        // const collegeContract  = new web3.eth.Contract(collegeAbi, collegeContractAddress);
-        //const result1 = await collegeContract.methods.registerCollege(EntredTitle).send({from:account});
-      //console.log(result1);
+     
     }
     else if(props.type ==='Course'){
       const collegecontract = new web3.eth.Contract(collegeAbi, collegeContractAddress);
@@ -123,13 +113,13 @@ const account = accounts[0];
 
     const result5 = await studentContract.methods.getTransacript().send({from:account});
     console.log(result4,result5);
+    
   }
   else if(props.type === 'PrivateReg'){
     //Register to Private
     
     const studentContract  = new web3.eth.Contract(studentAbi, studentContractAddress);
      const result5 = await studentContract.methods.registerToPrivateEntity(EntredTitle,dropDownValue.privateList.value).send({from:account});
-     //const result6 = await studentContract.methods.registerToPrivateEntity(EntredTitle,dropDownValue.privateList.value).call({from:account});
       
      console.log(result5);
   }
@@ -148,33 +138,16 @@ const account = accounts[0];
     const studentContract  = new web3.eth.Contract(studentAbi, studentContractAddress);
     const result6 = await studentContract.methods.generatePrivateEntityTransacript(dropDownValue.courseCerti.value).call({from:account});
     const result5 = await studentContract.methods.generatePrivateEntityTransacript(dropDownValue.courseCerti.value).send({from:account});
-    
+    setCertificateNumber(result6.toString());
     console.log(result6,result5);
     console.log(dropDownValue.courseCerti.value);
     
   }
-
-    // return [];
-  
-    
-  //  privateEntityContract  = new web3.eth.Contract(privateEntityAbi, privateEntityContractAddress);
-  
-  // organizationContract  = new web3.eth.Contract(organizationAbi, organizationContractAddress);
     
   } catch (err) {
     console.error(err);
   }
   
-  
-  
-  
-//  const result2 = await collegeContract.methods.registerCollege("NIT","CBSE").send({from:account});
-//  console.log(result2);
-//  const result3 = await collegeContract.methods.displayBoards().call({from:account});
-//  console.log(result3);
-
-//  const result4 = await collegeContract.methods.addCourse("CSE").send({from:account});
-//  console.log(result4);
 }
 
 useEffect(() => {
@@ -220,7 +193,9 @@ else if(props.type==='StudentPlatform'){
   const studentContract  = new web3.eth.Contract(studentAbi, studentContractAddress);
   const result5 = await studentContract.methods.getTransacript().call({from:account});
   const result9 = await studentContract.methods.getTransacript().send({from:account});
-  console.log(result5,result9);
+   setCertificateNumber(result5.toString());
+  // console.log('certinmuber',CertificateNumber)
+   console.log(result5,result9);
  }
  else if(props.type==='PriCertificate'){
   const studentContract = new web3.eth.Contract(studentAbi,studentContractAddress);
@@ -233,17 +208,6 @@ else if(props.type==='StudentPlatform'){
 }, []);
 
 
-// const fetchBoardData = async () => {
-//   try {
-//     const boardData = await init(); 
-//     console.log('boardData inside fetchBoardData:',boardData)
-//     const formattedOptions = boardData.map(val => ({ label: val[1], value: val[1] }));
-//     console.log(formattedOptions)
-//     setBoardNameOption(formattedOptions);
-//   } catch (error) {
-//     console.error(error);
-//   }
-// };
 
   const submitHandler = async (event) => {
     event.preventDefault();
@@ -251,7 +215,10 @@ else if(props.type==='StudentPlatform'){
    
     setCourseID("");
     setEnteredTitle("");
+
+    if(props.type!=='PriCertificate'){
     props.onClose();
+    }
 
   };
 
@@ -318,14 +285,18 @@ else if(props.type==='StudentPlatform'){
             />
           <div> <label>List of PrivateEntity</label> <Select  onChange={onDropDownChange({ dropDownId: 'privateList' })} options={privateEntityOptions} /></div>
           </>
-        } {props.type === 'PriCertificate' &&<div> <label>List of Course</label> <Select  onChange={onDropDownChange({ dropDownId: 'courseCerti' })} options={courseCertiNameOptions} /></div>}
+        } {props.type === 'PriCertificate' &&<div> <label>List of Course</label> <Select  onChange={onDropDownChange({ dropDownId: 'courseCerti' })} options={courseCertiNameOptions} />
+                  <br></br>
+                  <div><label>Your Certificate tokenId is: {CertificateNumber}</label> </div>
+        </div>}
           {props.type === 'College' &&<div> <label>List of Board</label> <Select  onChange={onDropDownChange({ dropDownId: 'course' })} options={boardNameOptions} /></div>}
           {props.type === 'StudentPlatform' &&<div> <label>Platform Course List</label> <Select onChange={onDropDownChange({ dropDownId: 'platformCOurseList' })} options={platformCourseoptions} /></div>}
         </div>
+        {props.type === 'RegCertificate' && CertificateNumber!=="" &&<div> Your Certificate tokenId is: {CertificateNumber} </div>}
       </div>
       {props.type !== 'RegCertificate' && <div className="new-expense__actions">
         <button type="button" onClick={cancleHandler}>Cancel</button>
-        <button type="submit">Add</button>
+        <button type="submit">Submit</button>
       </div>}
     </form>
   </>)
