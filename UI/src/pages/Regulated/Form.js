@@ -47,8 +47,8 @@ async function init(){
   try {
    if(props.type==='Board'){
       const regularBoardcontract = new web3.eth.Contract(regularBoardAbi, regularBoardContractAddress);
-       const result1 = await regularBoardcontract.methods.registerBoard(EntredTitle).send({from:account});
-       const result8 = await regularBoardcontract.methods.registerBoard(EntredTitle).call({from:account});
+       const result1 = await regularBoardcontract.methods.registerBoard(account,EntredTitle).send({from:account});
+       const result8 = await regularBoardcontract.methods.registerBoard(account,EntredTitle).call({from:account});
        console.log(result8);
 
       
@@ -59,7 +59,7 @@ async function init(){
     }
     else if(props.type==='College'){
        const collegecontract = new web3.eth.Contract(collegeAbi, collegeContractAddress);
-       const result2 = await collegecontract.methods.registerCollege(EntredTitle,dropDownValue.course.value).send({from:account});
+       const result2 = await collegecontract.methods.registerCollege(account,EntredTitle,dropDownValue.course.value).send({from:account});
         console.log('college input',EntredTitle,dropDownValue.course.value);
 
         const result8 = await collegecontract.methods.getColleges().call({from:account});
@@ -86,7 +86,7 @@ async function init(){
    else if(props.type === 'Platform'){
     const privateContract = new web3.eth.Contract(privateEntityAbi, privateEntityContractAddress);
     console.log('platform name',EntredTitle);
-    const result2 = await privateContract.methods.registerPrivateEntity(EntredTitle).send({from:account});
+    const result2 = await privateContract.methods.registerPrivateEntity(account,EntredTitle).send({from:account});
       
       console.log(result2);
       
@@ -103,7 +103,7 @@ async function init(){
     //Admission in Regulated<
       
        const student = new web3.eth.Contract(studentAbi,studentContractAddress);
-       const result5 = await student.methods.registerToCollege(EntredTitle,dropDownValue.course.value,dropDownValue.college.value).send({from:account});
+       const result5 = await student.methods.registerToCollege(account,EntredTitle,dropDownValue.course.value,dropDownValue.college.value).send({from:account});
        console.log(EntredTitle,dropDownValue.course.value,dropDownValue.college.value);
       
   }
@@ -113,10 +113,10 @@ async function init(){
      const studentContract  = new web3.eth.Contract(studentAbi, studentContractAddress);
      const studentId = await studentContract.methods.getCollegeStudentId().call({from:account});
      const result5 = await studentContract.methods.enrollTocourses(dropDownValue.studentCourse.value,studentId).send({from:account});
-     console.log(result5);
+     console.log('studentId',studentId);
 }
   else if(props.type === 'RegCertificate'){
-        //Regulated Certificate    
+        //Regulated Certificate   getting tokenId 
 
         const studentContract  = new web3.eth.Contract(studentAbi, studentContractAddress);
     const result5 = await studentContract.methods.getTransacript().send({from:account});
@@ -127,7 +127,8 @@ async function init(){
     
     const studentContract  = new web3.eth.Contract(studentAbi, studentContractAddress);
      const result5 = await studentContract.methods.registerToPrivateEntity(EntredTitle,dropDownValue.privateList.value).send({from:account});
-     console.log(result5);
+     const result6 = await studentContract.methods.registerToPrivateEntity(EntredTitle,dropDownValue.privateList.value).call({from:account});
+     console.log(result6);
   }
   else if(props.type === 'StudentPlatform'){
      //Enroll to Private    
@@ -140,7 +141,7 @@ async function init(){
    
   }
   else if(props.type === 'PriCertificate'){
-    //Private Certificate
+    //Private Certificate getting right tokenID
     const studentContract  = new web3.eth.Contract(studentAbi, studentContractAddress);
     const result5 = await studentContract.methods.generatePrivateEntityTransacript (dropDownValue.courseCerti.value).call({from:account});
     console.log(result5);
