@@ -72,7 +72,6 @@ const Platform =(props)=>{
         <DrawerHeader />
         <Button onClick={()=>(createHandler('Platform'))}>Register as Platform</Button>
         <Button onClick={()=>(createHandler('CoursePlatform'))}> Create a Course</Button>
-        <Button onClick={()=>(createHandler('StudentPlatform'))}>Enroll to course</Button>
         <Modal
               open={isClicked}
               onClose={closeHandler}
@@ -83,7 +82,7 @@ const Platform =(props)=>{
                 <Form type={event} onClose={closeHandler}/>
               </Box>
             </Modal>
-            <Usertable/>
+            {/* <Usertable/> */}
       </Main>
     </>)
 }

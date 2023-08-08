@@ -1,8 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState,useRef,useEffect, useReducer } from 'react';
 import Select from 'react-select';
 import './Form.css';
 import Web3 from 'web3';
-import { useEffect } from 'react';
+import {regularBoardAbi, regularBoardContractAddress} from './RegularBoard';
+import { collegeAbi, collegeContractAddress } from './College';
+import { organizationAbi,organizationContractAddress } from './Organization';
+import { privateEntityAbi,privateEntityContractAddress } from './PrivateEntity';
+import { studentAbi,studentContractAddress } from './Student';
+
+
+const web3 = new Web3(window.ethereum);
+const accounts = await web3.eth.requestAccounts();
+const account = accounts[0];
 
 
 const Form = (props) => {
@@ -11,9 +20,12 @@ const Form = (props) => {
   const [courseID, setCourseID] = useState("");
   const [dropDownValue, setDropDownValue] = useState({});
 
+  const [boardNameOptions,setBoardNameOption] = useState([]);
+
+
   const onDropDownChange = ({ dropDownId }) => (value) => {
     console.log({dropDownId, value});
-    setDropDownValue({ ...dropDownValue, [dropDownId]: value?.value });
+    setDropDownValue({ ...dropDownValue, [dropDownId]: value });
   }
 
   const titleChangeHandler = (event) => {
@@ -24,295 +36,92 @@ const Form = (props) => {
     setCourseID(event.target.value);
   };
 
-async function init(EntredTitle){
-  console.log('called');
- const abi=[
-	{
-		"inputs": [
-			{
-				"internalType": "uint8",
-				"name": "_boardId",
-				"type": "uint8"
-			},
-			{
-				"internalType": "string",
-				"name": "_boardname",
-				"type": "string"
-			}
-		],
-		"name": "registerBoard",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint8",
-				"name": "_collegeId",
-				"type": "uint8"
-			}
-		],
-		"name": "setCollege",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_address",
-				"type": "address"
-			}
-		],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"internalType": "string",
-				"name": "text",
-				"type": "string"
-			},
-			{
-				"indexed": false,
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"name": "sampleMsg",
-		"type": "event"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"name": "boardDataExists",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "boardList",
-		"outputs": [
-			{
-				"internalType": "uint8",
-				"name": "boardId",
-				"type": "uint8"
-			},
-			{
-				"internalType": "string",
-				"name": "boardName",
-				"type": "string"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "getBoardList",
-		"outputs": [
-			{
-				"components": [
-					{
-						"internalType": "uint8",
-						"name": "boardId",
-						"type": "uint8"
-					},
-					{
-						"internalType": "string",
-						"name": "boardName",
-						"type": "string"
-					}
-				],
-				"internalType": "struct RegularInterface.BoardInfo[]",
-				"name": "",
-				"type": "tuple[]"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "getCollegeList",
-		"outputs": [
-			{
-				"internalType": "uint8[]",
-				"name": "_collegeList",
-				"type": "uint8[]"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	}
-];
-  
-  const contractAddress="0x56BA5f8c622aeBfB262A105dc77032C48bEcfB23";
-  //const web3 = new Web3(Web3.givenProvider || "http://127.0.0.1:7545");
-   
-  const web3 = new Web3(window.ethereum);
-   const accounts = await web3.eth.requestAccounts();
-   const account = accounts[0];
-   console.log(account);
-  // const networkID = await web3.eth.net.getId();
-  let contract;
+async function init(){
+  //const web3 = new Web3(Web3.givenProvider || "http://127.0.0.1:7545");  
   try {
-    contract = new web3.eth.Contract(abi, contractAddress);
-    console.log('cont',contract);
+    if(props.type === 'Student'){
+        // const studentContract  = new web3.eth.Contract(studentAbi, studentContractAddress);
+        // const result5 = await studentContract.methods.registerToCollege("Nks").send({from:account});
+        // console.log(result5);
+    }
+    else if(props.type==='Board'){
+      const regularBoardcontract = new web3.eth.Contract(regularBoardAbi, regularBoardContractAddress);
+      // const result1 = await regularBoardcontract.methods.registerBoard(EntredTitle).send({from:account});
+      // console.log(result1);
+
+      const boardList = await regularBoardcontract.methods.getBoardList().call({from:account});
+      console.log('Retrieved board list:', boardList);
+      // return boardList;
+       //return boardNameOptionsData.current.push(result3.map(val => {return { label: val[1], value: val[1] }}));
+     
+    }
+    else if(props.type==='College'){
+      // const regularBoardcontract = new web3.eth.Contract(regularBoardAbi, regularBoardContractAddress);
+        console.log('selectedabc',dropDownValue.course.value);
+        console.log('selected',dropDownValue);
+
+      // const boardList = await regularBoardcontract.methods.getBoardList().call({from:account});
+     // console.log('Retrieved board list:', boardList);
+      // return boardList;
+        // const collegeContract  = new web3.eth.Contract(collegeAbi, collegeContractAddress);
+        //const result1 = await collegeContract.methods.registerCollege(EntredTitle).send({from:account});
+      //console.log(result1);
+    }
+
+    // return [];
+  
+    
+  //  privateEntityContract  = new web3.eth.Contract(privateEntityAbi, privateEntityContractAddress);
+  
+  // organizationContract  = new web3.eth.Contract(organizationAbi, organizationContractAddress);
+    
   } catch (err) {
     console.error(err);
   }
   
   
-  const result1 = await contract.methods.registerBoard(8,EntredTitle).send({from:account});
- console.log(result1);
+  
+  
+//  const result2 = await collegeContract.methods.registerCollege("NIT","CBSE").send({from:account});
+//  console.log(result2);
+//  const result3 = await collegeContract.methods.displayBoards().call({from:account});
+//  console.log(result3);
 
-//  var event = contract.events.sampleMsg();
-
-// // watch for changes
-// event.watch(function(error, result){
-//     // result will contain various information
-//     // including the argumets given to the `Deposit`
-//     // call.
-//     if (!error)
-//         console.log(result);
-// });
-
-// contract.events.sampleMsg( function(error, event){ console.log(event); })
-// .on('data', function(event){
-//   console.log(event); // same results as the optional callback above
-// })
-// .on('changed', function(event){
-//   // remove event from local database
-// })
-// .on('error', console.error);
-
-// var event = contract.sampleMsg(function(error, result) {
-//   if (!error)
-//       console.log(result);
-// });
-
-// contract.getPastEvents("sampleMsg").then((results) => console.log(results));
-
-  const result =  await contract.methods.getBoardList().call({from:account});
-  console.log(result); 
+//  const result4 = await collegeContract.methods.addCourse("CSE").send({from:account});
+//  console.log(result4);
 }
 
+useEffect(() => {
+ async function fetch(){
+  if(props.type === 'College'){
+
+    const regularBoardcontract = new web3.eth.Contract(regularBoardAbi, regularBoardContractAddress);
+    const data = await regularBoardcontract.methods.getBoardList().call({from:account});
+    setBoardNameOption(data.map(({boardName})=>({label:boardName,value: boardName})));
+  }
+
+  
+ }
+ fetch();
+}, []);
 
 
-  const submitHandler = (event) => {
+// const fetchBoardData = async () => {
+//   try {
+//     const boardData = await init(); 
+//     console.log('boardData inside fetchBoardData:',boardData)
+//     const formattedOptions = boardData.map(val => ({ label: val[1], value: val[1] }));
+//     console.log(formattedOptions)
+//     setBoardNameOption(formattedOptions);
+//   } catch (error) {
+//     console.error(error);
+//   }
+// };
+
+  const submitHandler = async (event) => {
     event.preventDefault();
-    if (props.type === 'Student') {
-      console.log("enroll as student to course")
-      const expenseData = {
-        title: EntredTitle,
-        courseId: courseID,
-      };
-      const registeredCollegeData = {
-        courseId: courseID,
-        collegeName: dropDownValue?.college,
-        boardName: dropDownValue?.board,
-        studentName: EntredTitle,
-      }
-      console.log(registeredCollegeData, dropDownValue);
-
-
-    }
-    else if (props.type === 'Board') {
-      console.log("Register board");
-      const boardData = {
-        boardName:EntredTitle,
-      };
-      init(EntredTitle);
-      console.log(boardData.boardName);
-      
-    }
-    else if (props.type === 'College') {
-      console.log("Register college");
-      const collegeData = {
-        collegeName: EntredTitle,
-        courseName: dropDownValue?.course,
-      }
-      console.log(collegeData);
-
-    }
-    else if (props.type === 'Course') {
-      console.log("Register a Course as college");
-      const courseData = {
-        courseName:EntredTitle,
-      };
-      console.log(courseData.courseName);
-    }
-    else if (props.type === 'RegisterCollege') {
-      console.log("Take admission in College");
-      console.log(EntredTitle);
-    }
-    else if (props.type === 'Platform') {
-      console.log("register platform");
-      console.log(EntredTitle);
-    }
-    else if (props.type === 'CoursePlatform') {
-      console.log("create paltform course");
-      console.log(EntredTitle);
-    }
-    else if (props.type === 'StudentPlatform') {
-      console.log("enroll as student to course in platform")
-      const expenseData = {
-        title: EntredTitle,
-        courseId: courseID,
-      };
-      const registeredCollegeData = {
-        courseId: courseID,
-        collegeName: dropDownValue?.college,
-        boardName: dropDownValue?.board,
-        studentName: EntredTitle,
-      }
-      console.log(registeredCollegeData, dropDownValue);
-
-
-    }
-    else {
-      const expenseData = {
-        title: EntredTitle,
-      };
-
-    }
+    init();
+   
     setCourseID("");
     setEnteredTitle("");
     props.onClose();
@@ -323,40 +132,51 @@ async function init(EntredTitle){
     setEnteredTitle("");
     props.onClose();
   }
+  console.log('data',props.boardNameOptions);
+
+  const getFomattedBoardNameOption=()=>{
+    return props.boardNameOptions.map((ele)=>{
+      return {label:ele.boardName,option:ele.boardName }
+    })
+  }
+
 
   return (<>
     <form onSubmit={submitHandler}>
       <div className="new-expense__controls">
         {props.type === 'Student' &&
           <div className="new-expense__control">
-            <label>Course Id</label>
+            {/* <label>Course Id</label>
             <input
               type="text"
               value={courseID}
               onChange={courseChangeHandler}
-            />
-            <label>List of Board</label>
-            <Select onChange={onDropDownChange({ dropDownId: 'board' })} options={[{ label: 'Board1', value: 'board1' }, { label: 'Board2', value: 'board2' }]} />
-            <label>List of College</label>
+            /> */}
+            <label>Student Id</label>
+            <Select  onChange={onDropDownChange({ dropDownId: 'board' })} options={boardNameOptions} />
+            <label>Course Name</label>
             <Select onChange={onDropDownChange({ dropDownId: 'college' })} options={[{ label: 'College1', value: 'college1' }, { label: 'College2', value: 'college2' }]} />
 
           </div>
         }
         <div className="new-expense__control">
+        {props.type !== 'Student' && props.type !== 'RegCertificate' && <>
           <label>{`${props.type} Name`}</label>
           <input
             type="text"
             value={EntredTitle}
             onChange={titleChangeHandler}
           />
-          {props.type === 'College' &&<div> <label>List of Board</label> <Select value={dropDownValue['course']} onChange={onDropDownChange({ dropDownId: 'course' })} options={[{ label: 'Course1', value: 'course1' }, { label: 'Course2', value: 'course2' }]} /></div>}
-          {props.type === 'StudentPlatform' &&<div> <label>List of Platform</label> <Select value={dropDownValue['course']} onChange={onDropDownChange({ dropDownId: 'course' })} options={[{ label: 'Course1', value: 'course1' }, { label: 'Course2', value: 'course2' }]} /></div>}
+         </>
+        }
+          {props.type === 'College' &&<div> <label>List of Board</label> <Select  onChange={onDropDownChange({ dropDownId: 'course' })} options={boardNameOptions} /></div>}
+          {props.type === 'StudentPlatform' &&<div> <label>List of Platform</label> <Select onChange={onDropDownChange({ dropDownId: 'course' })} options={[{ label: 'Course1', value: 'course1' }, { label: 'Course2', value: 'course2' }]} /></div>}
         </div>
       </div>
-      <div className="new-expense__actions">
+      {props.type !== 'RegCertificate' && <div className="new-expense__actions">
         <button type="button" onClick={cancleHandler}>Cancel</button>
         <button type="submit">Add</button>
-      </div>
+      </div>}
     </form>
   </>)
 }

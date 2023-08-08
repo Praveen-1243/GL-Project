@@ -1,17 +1,15 @@
 import React,{useState} from "react";
 import { styled } from '@mui/material/styles';
-import Form from './Form';
+import Form from './Regulated/Form';
 import Button from '@mui/material/Button';
-import Web3 from "web3";
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-import Usertable from "../../components/Usertable";
-import { regularBoardAbi,regularBoardContractAddress } from "./RegularBoard";
+import Usertable from "../components/Usertable";
 
 
 const drawerWidth = 240;
 
-const Regulated =(props)=>{
+const StudentPage =(props)=>{
 
 
   const style = {
@@ -46,7 +44,6 @@ const Regulated =(props)=>{
         }),
       );
 
-
       const DrawerHeader = styled('div')(({ theme }) => ({
         display: 'flex',
         alignItems: 'center',
@@ -56,9 +53,9 @@ const Regulated =(props)=>{
         justifyContent: 'flex-end',
       }));
 
+
       const [isClicked,setIsClicked] = useState(false);
       const [event,setEvent] = useState('');
-      const [boardNameOptions,setBoardNameOptions]=useState([]);
 
 
       const createHandler =(e)=>{
@@ -69,14 +66,16 @@ const Regulated =(props)=>{
       const closeHandler = ()=>{
         setIsClicked(false);
       }
-    
+
     return(<>
-    <Main open={props.open}>
+     <Main open={props.open}>
         <DrawerHeader />
-        <Button onClick={()=>(createHandler('Board'))}>Create Board</Button>
-        <Button onClick={()=>(createHandler('College'))}>Create College</Button>
-        <Button onClick={()=>(createHandler('Course'))}> Register Course as college</Button>
-       
+        <Button onClick={()=>(createHandler('RegisterCollege'))}> Admission in Regulated</Button>
+        <Button onClick={()=>(createHandler('Student'))}>Enroll to Regulated</Button>
+        <Button onClick={()=>(createHandler('RegCertificate'))}>Regulated Certificate</Button>
+        <Button onClick={()=>(createHandler('PrivateReg'))}>Register to Private</Button>
+        <Button onClick={()=>(createHandler('StudentPlatform'))}>Enroll to Private</Button>
+        <Button onClick={()=>(createHandler('PriCertificate'))}> Private Certificate</Button>
         <Modal
               open={isClicked}
               onClose={closeHandler}
@@ -84,17 +83,13 @@ const Regulated =(props)=>{
               aria-describedby="modal-modal-description"
             >
               <Box sx={style}>
-                <Form type={event} onClose={closeHandler} boardNameOptions={boardNameOptions}/>
+                <Form type={event} onClose={closeHandler}/>
               </Box>
             </Modal>
-            <br/>
-            <br/>
-            <br/>
-            <br/>
             {/* <Usertable/> */}
       </Main>
     </>)
 }
 
 
-export default Regulated;
+export default StudentPage;

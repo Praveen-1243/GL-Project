@@ -18,6 +18,7 @@ import Private from '../pages/Private/Private';
 import Platform from '../pages/Platform';
 import {listItems} from './listItems';
 import Web3 from 'web3'
+import StudentPage from '../pages/StudentPage';
 
 const drawerWidth = 240;
 
@@ -179,6 +180,9 @@ export default function PersistentDrawerLeft() {
             </Route>
             <Route path='/platform'>
                 <Platform  open={open}/>
+            </Route>
+            <Route path='/student'>
+                <StudentPage  open={open}/>
             </Route>
 
       </Switch>
