@@ -25,7 +25,6 @@ contract PrivateEntityContract is IPrivateEntity{
     uint8 private courseId;
     uint8 private randomMarks;
     constructor(address _mintAddr) {
-        privateEntityAddress = msg.sender;
         mintAddress = _mintAddr;
         privId = 101;
         courseId = 161;
@@ -45,7 +44,8 @@ contract PrivateEntityContract is IPrivateEntity{
     mapping (address => mapping(uint8 => uint8[])) studentRegisteredCourses;
     mapping (address => mapping(uint8 => mapping(uint8 => uint256))) marksInfo;
 
-    function registerPrivateEntity(string memory _privname) public returns(bool){
+    function registerPrivateEntity(address _privAddr, string memory _privname) public returns(bool){
+        privateEntityAddress = _privAddr;
         if (privEntityExists[privateEntityAddress] || (privId <101 || privId >110)) {
             return false;
         }  

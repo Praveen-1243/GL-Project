@@ -33,7 +33,6 @@ contract CollegeContract is ICollegeContract {
     constructor(address _regular, address _mint) {
         regularSmartContractAddress = _regular;
         mintSmartContractAddress = _mint;
-        collegeOwner = msg.sender;
         collegeId = 11;
         courseId = 131;
         randomMarks = 20;
@@ -63,7 +62,8 @@ contract CollegeContract is ICollegeContract {
     event Datalog(string ,uint256);
     
 
-    function registerCollege(string memory _collegeName, string memory _boardName) public returns (bool) {
+    function registerCollege(address _clgAddr, string memory _collegeName, string memory _boardName) public returns (bool) {
+        collegeOwner = _clgAddr;
         if (collegeExists[collegeOwner] || (collegeId <11 || collegeId>30)) {
             return false;
         }  
